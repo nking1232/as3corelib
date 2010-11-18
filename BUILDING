@@ -1,0 +1,10 @@
+Run these commands:
+
+  setenv FLEX_HOME /export/flex/current
+  ant -f build/build.xml
+
+but first you will need to:
+
+  rm /export/flex/current/lib/xercesPatch.jar
+
+because Adobe is retarded.
