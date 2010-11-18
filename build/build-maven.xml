@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="as3corelib" default="deploy" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+
+  <property name="maven-ant.vers" value="2.1.1"/>
+  <property name="maven-ant.dir" value="${user.home}/.m2/ant-support"/>
+  <property name="maven-ant.jar" value="${maven-ant.dir}/maven-ant-tasks-${maven-ant.vers}.jar"/>
+  <property name="maven-ant.url"
+            value="http://mirrors.ibiblio.org/pub/mirrors/apache/maven/binaries"/>
+  <condition property="maven-ant.exists"><available file="${maven-ant.jar}"/></condition>
+  <target name="-download-maven-ant" unless="maven-ant.exists">
+    <mkdir dir="${maven-ant.dir}"/>
+    <get src="${maven-ant.url}/maven-ant-tasks-${maven-ant.vers}.jar" 
+         dest="${maven-ant.jar}" usetimestamp="true"/>
+  </target>
+
+  <target name="-init-maven-ant" depends="-download-maven-ant">
+    <taskdef resource="org/apache/maven/artifact/ant/antlib.xml"
+             uri="urn:maven-artifact-ant" classpath="${maven-ant.jar}"/>
+    <artifact:pom id="pom" file="${basedir}/pom.xml"/>
+  </target>
+
+  <target name="deploy" depends="-init-maven-ant" 
+          description="Deploys our build artifact to a Maven repository.">
+    <artifact:deploy file="../bin/as3corelib.swc" uniqueVersion="false">
+      <remoteRepository url="file://repository"/>
+      <pom refid="pom"/>
+    </artifact:deploy>
+  </target>
+</project>
